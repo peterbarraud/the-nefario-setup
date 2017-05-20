@@ -69,21 +69,15 @@ IF %goodsofar% EQU 1 (
 IF %goodsofar% EQU 1 (
 	IF EXIST mariadb.min\mdb.running (
 		CALL:setupdb
-		if %goodsofar% EQU 1 (
-			echo Something went wrong with the DB setup. Make sure you started mariadb
-			echo Press Enter to close this prompt. Fix the mariadb problem and then run this script again
-			pause >nul	
-		) else (
-			echo here
-			CALL:createngapp
-			CALL:createappdatafile
-			CALL:copyappstartupfiles
-			CALL:copydatainitfiles
-			CALL:copyservicesfolder
-			CALL:copyngappfiles
-			CALL:createrestservice
-			CALL:createappusercomponent
-		)
+		CALL:createngapp
+		CALL:createappdatafile
+		CALL:copyappstartupfiles
+		CALL:copydatainitfiles
+		CALL:copyservicesfolder
+		CALL:copyngappfiles
+		CALL:createrestservice
+		CALL:createappusercomponent
+		
 	) ELSE (
 		ECHO The database does not seem to be running. Go to this folder and double-click start-db.bat
 	)
@@ -95,7 +89,6 @@ REM Create the NG App
 :createngapp
 	ECHO Running createngapp
 	IF NOT EXIST %appname% (
-		echo here also
 		ng new %appname%
 	)
 	GOTO:EOF
