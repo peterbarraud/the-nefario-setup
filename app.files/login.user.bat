@@ -1,8 +1,5 @@
 ECHO off
 
-call ..\..\common.bat\getappdata.bat getValueForKey mariadbdir app.data
-SET mariadbdir=%value%
-
 call ..\..\common.bat\getappdata.bat getValueForKey dbusername app.data
 SET username=%value%
 
