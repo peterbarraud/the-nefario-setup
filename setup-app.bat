@@ -67,21 +67,25 @@ IF %goodsofar% EQU 1 (
 
 
 IF %goodsofar% EQU 1 (
-	CALL:setupdb
-	if %errorlevel% NEQ 0 (
-		echo Something went wrong with the DB setup. Make sure you started mariadb
-		echo Press Enter to close this prompt. Fix the mariadb problem and then run this script again
-		pause >nul	
-	) else (
-		echo here
-		CALL:createngapp
-		CALL:createappdatafile
-		CALL:copyappstartupfiles
-		CALL:copydatainitfiles
-		CALL:copyservicesfolder
-		CALL:copyngappfiles
-		CALL:createrestservice
-		CALL:createappusercomponent
+	IF EXIST mariadb.min\mdb.running (
+		CALL:setupdb
+		if %goodsofar% EQU 1 (
+			echo Something went wrong with the DB setup. Make sure you started mariadb
+			echo Press Enter to close this prompt. Fix the mariadb problem and then run this script again
+			pause >nul	
+		) else (
+			echo here
+			CALL:createngapp
+			CALL:createappdatafile
+			CALL:copyappstartupfiles
+			CALL:copydatainitfiles
+			CALL:copyservicesfolder
+			CALL:copyngappfiles
+			CALL:createrestservice
+			CALL:createappusercomponent
+		)
+	) ELSE (
+		ECHO The database does not seem to be running. Go to this folder and double-click start-db.bat
 	)
 )
 

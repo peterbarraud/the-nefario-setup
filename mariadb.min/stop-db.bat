@@ -1,5 +1,7 @@
 ECHO off
 
+del mdb.running
+
 bin\mysqladmin -u root shutdown
 
 call ..\common.bat\manageerror.bat handleerror
