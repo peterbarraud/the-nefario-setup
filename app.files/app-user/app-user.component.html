@@ -1,0 +1,17 @@
+<h2>
+  app-user works!
+</h2>
+<ul class="list-group">
+  <li class="list-group-item" *ngFor="let appUser of appUsers">
+    <button (click)="selectedUser=appUser">{{appUser.name}}</button>
+    <button (click)="deleteUser(appUser.id)">Delete this user</button>
+  </li>
+</ul>
+
+<div *ngIf="selectedUser">
+  <input type="text" #namefield value="{{selectedUser.name}}">
+  <button (click)="saveUserDetails(namefield)">Save</button>
+
+</div>
+
+
