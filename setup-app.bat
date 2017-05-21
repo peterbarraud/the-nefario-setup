@@ -124,8 +124,6 @@ IF %goodsofar% EQU 1 (
 	ECHO If you want to shut down MariaDB, you can go to the maria.min folder and run stop-db.bat
 	ECHO If you want to shut down the PHP service, you can find the windows in the Taskbar at the bottom
 	ECHO It just doesn't show up when you Alt+Tab. At least not until you go to it once from the Taskbar
-
-
 )
 
 GOTO:EOF
@@ -243,7 +241,7 @@ REM Set up the db
 	del db-init_temp.sql
 
 	REM Then execute the main db.sql
-	mariadb.min\bin\mysql --user=root --password= --database=%dbname% < app.files\db.init\db.sql
+	mariadb.min\bin\mysql --user=root --password= --database=%dbname% < app.files\db.init\db.reinit.sql
 
 	GOTO:EOF
 
