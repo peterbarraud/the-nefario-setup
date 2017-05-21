@@ -1,1 +1,6 @@
-mariadb.min/*
+mariadb.min/
+med-zap/
+tanikameds-live/
+tanikameds-xls-processor/
+tanikameds/
+mariadb.min/data/mysql/db.MYI
