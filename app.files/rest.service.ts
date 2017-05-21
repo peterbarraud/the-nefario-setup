@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class RestService {
-  hostServerUrl: string = "http://localhost:9001/rest.api.php/"
+  hostServerUrl: string = "localhostrestserverlocation"
 //   hostServerUrl = "services/rest.api.php/"
 
   constructor(private http: Http) { }

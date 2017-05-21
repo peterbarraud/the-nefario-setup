@@ -91,6 +91,7 @@ REM Create the NG App
 	IF NOT EXIST %appname% (
 		ng new %appname%
 	)
+	ECHO ++++++++++++++++++
 	GOTO:EOF
 
 REM Create the app.data file
@@ -101,8 +102,9 @@ REM Create the app.data file
 	ECHO dbname:%dbname%; >> %appname%\app.files\app.data
 	ECHO dbusername:%dbusername%; >> %appname%\app.files\app.data
 	ECHO dbpwd:%dbpwd%; >> %appname%\app.files\app.data
-	ECHO appname:%appname% >> %appname%\app.files\app.data
+	ECHO appname:%appname%; >> %appname%\app.files\app.data
 
+	ECHO ++++++++++++++++++++++++
 	GOTO:EOF
 	
 REM Copy the app startup files
@@ -111,6 +113,7 @@ REM Copy the app startup files
 	copy app.files\login.user.bat %appname%\app.files\
 	copy app.files\start.php.bat %appname%\app.files\
 
+	ECHO ++++++++++++++++++++++++++
 	GOTO:EOF
 
 REM Copy the data init files
@@ -119,6 +122,7 @@ REM Copy the data init files
 	md %appname%\app.files\db.reinit
 	copy app.files\db.init\*reinit* %appname%\app.files\db.reinit
 
+	ECHO +++++++++++++++++++++++++
 	GOTO:EOF
 
 REM Copy the services folder
@@ -126,7 +130,11 @@ REM Copy the services folder
 	ECHO Running copyservicesfolder
 	md %appname%\services
 	xcopy /SYD app.files\services %appname%\services
-
+	lib\fart.exe %appname%\services\objectlayer\datalayer.php databaseusername %dbusername%
+	lib\fart.exe %appname%\services\objectlayer\datalayer.php databasepassword %dbpwd%
+	lib\fart.exe %appname%\services\objectlayer\datalayer.php databasename %dbname%
+	
+	ECHO +++++++++++++++++++++++++
 	GOTO:EOF
 
 REM Copy the ng-app files. But make sure you first run the ng-cli commands to create these files in your app and only then copy run this entire batch file
@@ -134,30 +142,39 @@ REM That means we should fail the batch if the files don't already exist
 :copyngappfiles
 	REM At this point, unfortunately, we are not able to do a check if these files exist. Simply because these files need to exist before we run this script
 	REM You will need to create these files using the ng-cli to get things started. In fact, that is a basic pre-req of this script.
-	REM We should, in fact, fail this script, if these files don't already exist
 	ECHO Running copyngappfiles
-	copy app.files\rest.service.ts %appname%\src\app
 	copy app.files\app.component.html %appname%\src\app\app.component.html
-	copy app.files\app-user\* %appname%\src\app\app-user
+	
+	ECHO +++++++++++++++++++++
 	GOTO:EOF
 
 REM Create the ng Rest Service in the app folder
 :createrestservice
 	ECHO Running createrestservice
 	IF NOT EXIST %appname%\src\app\rest.service.ts (
+		ECHO got to create service
 		cd %appname%
-		ng service g rest.service
+		ng g service rest.service
 		cd ..
+		copy app.files\rest.service.ts %appname%\src\app
+		lib\fart.exe %appname%\src\app\rest.service.ts localhostrestserverlocation http://localhost:%phpport%/rest.api.php/
 	)
+	
+	ECHO ++++++++++++++++++++++++
 	GOTO:EOF
 	
 REM Create the AppUser component	
 :createappusercomponent
+	ECHO Running createappusercomponent
 	IF NOT EXIST %appname%\src\app\app-user (
+		ECHO got to create component
 		cd %appname%
 		ng g component AppUser
 		cd ..
+		copy app.files\app-user\* %appname%\src\app\app-user
 	)
+	
+	ECHO ++++++++++++++++++
 	GOTO:EOF
 
 

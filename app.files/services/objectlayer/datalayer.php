@@ -1,31 +1,5 @@
 <?php
 
-final class UserFactory
-{
-    /**
-     * Call this method to get singleton
-     *
-     * @return UserFactory
-     */
-    public static function Instance()
-    {
-        static $inst = null;
-        if ($inst === null) {
-            $inst = new UserFactory();
-        }
-        return $inst;
-    }
-
-    /**
-     * Private ctor so nobody else can instance it
-     *
-     */
-    private function __construct()
-    {
-      $this->conn = new mysqli('localhost','peterb','Pokerj#07','tanikae1_meds');
-    }
-}
-
 final class DataLayer {
   public static function Instance()
   {
@@ -42,7 +16,7 @@ final class DataLayer {
     */
   private function __construct()
   {
-    $this->conn = new mysqli('localhost:3800','pokerj','Pokerj#07','test_db');
+    $this->conn = new mysqli('localhost','databaseusername','databasepassword','databasename');
   }
 
   public function __destruct()

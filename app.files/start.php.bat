@@ -1,18 +1,15 @@
 ECHO off
 
-call common.bat\getappdata.bat getValueForKey phpport
+call ..\..\common.bat\getappdata.bat getValueForKey phpport app.data
 SET phpport=%value%
 
-call common.bat\getappdata.bat getValueForKey appname
+call ..\..\common.bat\getappdata.bat getValueForKey appname app.data
 SET appname=%value%
 
-call common.bat\getappdata.bat getValueForKey phpdir
-SET phpdir=%value%
+SET phpdir=..\..\php.min
 
 ECHO Running PHP on PORT %phpport%
 
-%phpdir%\php -S localhost:%phpport% -t %appname%\services -c %phpdir%\php.ini
+%phpdir%\php -S localhost:%phpport% -t ..\..\%appname%\services -c %phpdir%\php.ini
 
-call common.bat\manageerror.bat handleerror
-
-
+call ..\..\common.bat\manageerror.bat handleerror
