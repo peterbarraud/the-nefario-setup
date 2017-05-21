@@ -1,28 +1,30 @@
 ECHO off
 
-call ..\..\..\common.bat\getappdata.bat getValueForKey dbusername ..\app.data
-SET username=%value%
+SET commonfolderpath=..\..\..\common.bat\
+SET mariadbpath=..\..\..\mariadb.min\bin\mysql
 
-call ..\..\..\common.bat\getappdata.bat getValueForKey dbusername ..\app.data
-SET username=%value%
-
-call ..\..\..\common.bat\getappdata.bat getValueForKey dbpwd ..\app.data
-SET pwd=%value%
-
-call ..\..\..\common.bat\getappdata.bat getValueForKey dbname ..\app.data
-SET dbname=%value%
-
-ECHO drop database if exists %dbname%; > db-reinit.sql
-ECHO create database if not exists %dbname%; >> db-reinit.sql
-
-..\..\..\mariadb.min\bin\mysql --user=root --password= --database=%dbname% < db-reinit.sql
-
-del db-reinit.sql
+CALL:getappdata
 
 REM Re-execute the main db.sql
-..\..\..\mariadb.min\bin\mysql --port=%port% --user=root --password= --database=%dbname% < db.sql
+%mariadbpath% --port=%port% --user=root --password= --database=%dbname% < db.reinit.sql
 
+call %commonfolderpath%alldone.bat endprompt
 
-call ..\..\..\common.bat\alldone.bat endprompt
+call %commonfolderpath%manageerror.bat handleerror
 
-call ..\..\..\common.bat\manageerror.bat handleerror
+GOTO:EOF
+
+:getappdata
+    call %commonfolderpath%getappdata.bat getValueForKey dbusername ..\app.data
+    SET username=%value%
+
+    call %commonfolderpath%getappdata.bat getValueForKey dbusername ..\app.data
+    SET username=%value%
+
+    call %commonfolderpath%getappdata.bat getValueForKey dbpwd ..\app.data
+    SET pwd=%value%
+
+    call %commonfolderpath%getappdata.bat getValueForKey dbname ..\app.data
+    SET dbname=%value%
+
+    GOTO:EOF
