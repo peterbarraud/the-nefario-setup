@@ -1,8 +1,12 @@
 ECHO off
 
-ECHO MariaDB running > mdb.running
-
-bin\mysqld
+IF EXIST mdb.running (
+	ECHO The DB seems to be running. Please check
+	pause
+) ELSE (
+	ECHO MariaDB running > mdb.running
+	bin\mysqld
+)
 
 ..\common.bat\manageerror.bat handleerror
 

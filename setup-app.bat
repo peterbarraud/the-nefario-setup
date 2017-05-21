@@ -44,8 +44,9 @@ IF %goodsofar% EQU 1 (
 	SET dbpwd=%4
 	SET appname=%5
 )
+
 IF %goodsofar% EQU 1 (
-	IF EXIST %appname\app.files (
+	IF EXIST %appname%\app.files (
 		ECHO WARNING: The app.files folder is already exists for this project. You have most probably run this script on this project before
 		ECHO If you want to run this script again, you will need to delete all the startup folders
 		ECHO Be super careful before doing that. Are you deleting files on an WIP project
@@ -53,34 +54,78 @@ IF %goodsofar% EQU 1 (
 	)
 )
 IF %goodsofar% EQU 1 (
-	IF EXIST %appname\app.files\db.init (
+	IF EXIST %appname%\app.files\db.init (
 		ECHO The data init folder %appname%\app.files\db.init already exists. This script DOES NOT overwrite any files or folders
 		SET goodsofar=0
 	)
 )
 IF %goodsofar% EQU 1 (
-	IF EXIST %appname\services (
+	IF EXIST %appname%\services (
 		ECHO The services folder %appname%\services already exists. This script DOES NOT overwrite any files or folders
 		SET goodsofar=0
 	)
 )
-
+REM Check if MariaDB is started. If not try to start it up
+IF %goodsofar% EQU 1 (
+	echo 1
+	IF NOT EXIST mariadb.min\mdb.running (
+		setlocal EnableDelayedExpansion
+		REM Start MariaDB
+		cd mariadb.min
+		REM In the MIN mode. So you're not going to see a Command window running. So, probably, the only way to stop this is by using the stop-db.bat
+		start /MIN start-db.bat
+		cd ..
+		REM We're going to wait to make sure it got started
+		SET goodsofar=0
+		SET counter=1
+		:checkfordbrun
+		REM But we're not going to check indefinitely
+		IF !counter! LSS 6 (
+			IF EXIST mariadb.min\mdb.running (
+				SET goodsofar=1
+			) ELSE (
+				REM The SLEEP command does not seem to work so I'm using the following hack - Courtsey: http://stackoverflow.com/questions/4317020/windows-batch-sleep
+				ping -n 2 127.0.0.1 >nul
+				SET /A counter=counter+1
+				GOTO:checkfordbrun
+			)
+		)
+	)
+)
 
 IF %goodsofar% EQU 1 (
-	IF EXIST mariadb.min\mdb.running (
-		CALL:setupdb
-		CALL:createngapp
-		CALL:createappdatafile
-		CALL:copyappstartupfiles
-		CALL:copydatainitfiles
-		CALL:copyservicesfolder
-		CALL:copyngappfiles
-		CALL:createrestservice
-		CALL:createappusercomponent
-		
-	) ELSE (
-		ECHO The database does not seem to be running. Go to this folder and double-click start-db.bat
-	)
+	CALL:setupdb
+	CALL:createngapp
+	CALL:createappdatafile
+	CALL:copyappstartupfiles
+	CALL:copydatainitfiles
+	CALL:copyservicesfolder
+	CALL:copyngappfiles
+	CALL:createrestservice
+	CALL:createappusercomponent
+
+	REM All done. Let's run stuff
+	REM First, PHP services
+	cd %appname%\app.files
+	start "%appname% PHP Servies" /MIN start.php.bat
+	REM Then, Visual Studio Code
+	cd ..\
+
+	code .
+
+	REM And finally, let's just cd back to the prompt that we started at
+	cd ..\
+
+	ECHO We are all done here! But you're not
+	ECHO In Visual Studio Code, open app.module.ts and register the Rest Service in your app.
+	ECHO For some reason, ng-cli does not do this for Services. In their defence, they DO warn you went you run the ng g service command
+	ECHO IMPORTANT
+	ECHO Both MariaDB and PHP have been opened in the MIN mode. This means that you will not see command Windows open for either of these
+	ECHO If you want to shut down MariaDB, you can go to the maria.min folder and run stop-db.bat
+	ECHO If you want to shut down the PHP service, you can find the windows in the Taskbar at the bottom
+	ECHO It just doesn't show up when you Alt+Tab. At least not until you go to it once from the Taskbar
+
+
 )
 
 GOTO:EOF
