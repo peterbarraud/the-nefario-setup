@@ -9,12 +9,6 @@
 	//this ensures that a single connection is opened for the entire duration of the API but no more
 	//we can then also (brilliant, this one) make full use of db transactions - we can do a full commit / rollback of everything that happened for the duration of the API
 
-
-	// TODO
-	// create the datalayer as a singleton
-	// in the rest api, we instantiate the singleton and close the connection in the rest api itselft
-	// BIG TODO
-
 	$app->get('/validateuser/:username/:password/', 'getappuser');
 	function getappuser($username, $password) {
 		require_once('objectlayer/appusercollection.php');
@@ -47,10 +41,6 @@
 	$app->get('/getnewobjectbyclassname/:classname/', 'getnewobjectbyclassname');
 	function getnewobjectbyclassname($classname) {
 		require_once('objectlayer/' . $classname . '.php');
-		$type = $classname;
-		$object = new $type();
-		$type = $classname;
-		$object = new $type();
 		$type = $classname;
 		$object = new $type();
 		allow_cross_domain_calls();
